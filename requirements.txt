@@ -1,0 +1,7 @@
+tensorflow>=2.13
+tensorflow-datasets
+opencv-python
+matplotlib
+numpy
+scikit-learn
+git+https://github.com/tensorflow/examples.git
