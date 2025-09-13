@@ -76,7 +76,7 @@ python unet_training.py
 
 ## Results & Visualizations
 <img width="555" height="540" alt="Untitled design (14)" src="https://github.com/user-attachments/assets/854bbcba-dfee-4905-90f8-07fd6b30e4d8" />
-<img width="2011" height="1000" alt="Figure 2" src="https://github.com/user-attachments/assets/54c661b9-b308-4017-8766-4f61d2c2ac8f" />
+<img width="1005" height="500" alt="Figure 2" src="https://github.com/user-attachments/assets/54c661b9-b308-4017-8766-4f61d2c2ac8f" />
 
 ---
 ## Future Work
