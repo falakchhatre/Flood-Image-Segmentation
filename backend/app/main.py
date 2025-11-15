@@ -5,6 +5,8 @@ from model import preprocess_image, predict_mask
 from PIL import Image
 import numpy as np
 import os
+from uuid import uuid4
+
 
 # Instantiate app
 app = FastAPI(title="Flood Segmentation API")
@@ -31,26 +33,40 @@ def root():
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     try:
+        # read uploaded file
         img_bytes = await file.read()
+
+        # preprocess for model
         img_array = preprocess_image(img_bytes)
+
+        # run model to get mask (0/1 per pixel)
         mask = predict_mask(img_array)
 
-        # Convert mask to RGB
-        mask_rgb = np.stack([mask]*3, axis=-1)
-        mask_img = Image.fromarray(mask_rgb.astype(np.uint8))
+        # convert predicted mask to grayscale (0 or 255)
+        mask_img = Image.fromarray((mask * 255).astype(np.uint8))        
 
-        # Convert preprocessed input to image
+        # convert normalized input back to image
         input_img = (img_array[0] * 255).astype(np.uint8)
         input_img_pil = Image.fromarray(input_img)
 
-        # Save both images
-        input_path = "static/input.png"
-        mask_path = "static/result.png"
+        # generate unique filenames
+        input_filename = f"input_{uuid4().hex}.png"
+        mask_filename  = f"mask_{uuid4().hex}.png"
+
+        # build paths for saving images
+        input_path = os.path.join("static", input_filename)
+        mask_path  = os.path.join("static", mask_filename)
+
+        # save output images
         input_img_pil.save(input_path)
         mask_img.save(mask_path)
 
-        return {"input": input_path, "mask": mask_path}
+        # send file paths back to frontend
+        return {
+            "input": f"static/{input_filename}",
+            "mask": f"static/{mask_filename}",
+        }
 
     except Exception as e:
+        # return error message if something goes wrong
         return {"error": str(e)}
-
